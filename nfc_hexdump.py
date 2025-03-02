@@ -35,18 +35,18 @@ av = sys.argv[1:]
 if av[0][0] == '-':
     Chr = Dec = Bin = Rev = False
 
+FLAGS = {
+    '-r': 'Rev',
+    '-b': 'Bin',
+    '-d': 'Dec',
+    '-c': 'Chr'
+}
+
 while av[0][0] == '-':
     arg = av.pop(0)
-
-    if arg == '-r':
-        Rev = True
-    elif arg == '-b':
-        Bin = True
-    elif arg == '-d':
-        Dec = True
-    elif arg == '-c':
-        Chr = True
-
+    
+    if arg in FLAGS:
+        globals()[FLAGS[arg]] = True
 
 filename = av.pop(0)
 with open(filename, encoding="utf-8") as fd:
@@ -66,19 +66,14 @@ with open(filename, encoding="utf-8") as fd:
 
             if Chr:
                 # b = [int(a[2], 16), int(a[3], 16), int(a[4], 16), int(a[5], 16)]
-                c = ["-" if x < 32 or x > 126 else chr(x) for x in b]
-                d = " ".join(c)
-                out_list.append(d)
+                out_list.append(" ".join(["-" if x < 32 or x > 126 else chr(x) for x in b]))
 
             if Dec:
-                e = [f"{x:3d}" for x in b]
-                f = " ".join(e) + ' '
-                out_list.append(f)
+                out_list.append(" ".join([f"{x:3d}" for x in b]) + ' ')
 
             if Bin:
                 # e =  "{:3d} {:3d} {:3d} {:3d}".format(*b)
-                g = " ".join([f"{x:08b}" for x in b])
-                out_list.append(g)
+                out_list.append(" ".join([f"{x:08b}" for x in b]))
 
             # print(line.rstrip(), '#  ', d, '\t', f, '\t', g)
             print(line.rstrip(), '#\t', '    '.join(out_list))
